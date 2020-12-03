@@ -15,8 +15,11 @@ def main():
     data = list(map(lambda x: re.match(
         "([0-9]*)-([0-9]*) ([^:]+): ([^\n]+)", x).groups(), data))
 
-    print("Part 1:", sum(valid_pass(1, *d) for d in data))
-    print("Part 2:", sum(valid_pass(2, *d) for d in data))
+    part_1 = sum(valid_pass(1, *d) for d in data)
+    part_2 = sum(valid_pass(2, *d) for d in data)
+
+    print("Part 1:", part_1)
+    print("Part 2:", part_2)
 
 
 if __name__ == "__main__":

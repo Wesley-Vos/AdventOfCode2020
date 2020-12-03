@@ -1,7 +1,7 @@
 import re
 
 
-def valide_pass(part, first, second, criteria, password):
+def valid_pass(part, first, second, criteria, password):
     if part == 1:
         result = sum(letter == criteria for letter in password)
         return (int(first) <= result <= int(second))
@@ -15,8 +15,8 @@ def main():
     data = list(map(lambda x: re.match(
         "([0-9]*)-([0-9]*) ([^:]+): ([^\n]+)", x).groups(), data))
 
-    print("Part 1:", sum(valide_pass(1, *d) for d in data))
-    print("Part 2:", sum(valide_pass(2, *d) for d in data))
+    print("Part 1:", sum(valid_pass(1, *d) for d in data))
+    print("Part 2:", sum(valid_pass(2, *d) for d in data))
 
 
 if __name__ == "__main__":

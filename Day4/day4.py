@@ -9,9 +9,7 @@ class PassportScanner:
         with open(file_path, "r") as f:
             raw_data = f.read().split("\n\n")
 
-        scanned_passports = []
-        for line in raw_data:
-            scanned_passports.append(Passport(line))
+        scanned_passports = [Passport(line) for line in raw_data]
         return scanned_passports
 
     def count_passports(self):
@@ -30,9 +28,7 @@ class Passport:
     def _parse_raw_data(self, raw_data):
         pattern = r"(byr|eyr|iyr|hgt|hcl|ecl|pid|cid):([\S]*)"
         fields_parsed = re.findall(pattern, raw_data)
-        fields = {}
-        for key, value in fields_parsed:
-            fields[key] = value
+        fields = {key: value for key, value in fields_parsed}
         return fields
 
     def _check_passport(self):

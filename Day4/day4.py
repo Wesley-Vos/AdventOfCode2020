@@ -9,10 +9,10 @@ class PassportScanner:
         with open(file_path, "r") as f:
             raw_data = f.read().split("\n\n")
 
-        scanned_lines = []
+        scanned_passports = []
         for line in raw_data:
-            scanned_lines.append(Passport(line))
-        return scanned_lines
+            scanned_passports.append(Passport(line))
+        return scanned_passports
 
     def count_passports(self):
         return sum((passport.present for passport in self.passports))
@@ -28,11 +28,10 @@ class Passport:
         self.validated = self._validate_passport()
 
     def _parse_raw_data(self, raw_data):
-        pattern = r"([a-z]{3}:[\S]*)"
+        pattern = r"(byr|eyr|iyr|hgt|hcl|ecl|pid|cid):([\S]*)"
         fields_parsed = re.findall(pattern, raw_data)
         fields = {}
-        for field in fields_parsed:
-            key, value = field.split(":")
+        for key, value in fields_parsed:
             fields[key] = value
         return fields
 
@@ -45,6 +44,7 @@ class Passport:
         byr = (1920 <= int(self.fields["byr"]) <= 2002)
         iyr = (2010 <= int(self.fields["iyr"]) <= 2020)
         eyr = (2020 <= int(self.fields["eyr"]) <= 2030)
+
         hgt = self.fields["hgt"]
         hgt = re.match("([0-9]{2,3})([a-z]{2})",  hgt)
         if hgt is not None and len(hgt.groups()) == 2:
@@ -63,23 +63,26 @@ class Passport:
 
 
 def test():
-    test_scanner_part1 = PassportScanner("test_input_part1.txt")
-    test_scanner_part2_1 = PassportScanner("test_input_part2_1.txt")
-    test_scanner_part2_2 = PassportScanner("test_input_part2_2.txt")
+    test_1 = PassportScanner("test_input_part1.txt")
+    test_2 = PassportScanner("test_input_part2_1.txt")
+    test_3 = PassportScanner("test_input_part2_2.txt")
 
-    assert test_scanner_part1.count_passports() == 2, "2 passports with required fields"
-    assert test_scanner_part2_1.count_validated_passports(
-    ) == 0, "4 invalid passports inputted"
-    assert test_scanner_part2_2.count_validated_passports(
-    ) == 3, "3 valid passports inputted"
+    assert test_1.count_passports() == 2, "2 passports with required fields (p1)"
+    assert test_2.count_validated_passports() == 0, "4 invalid passports inputted (p2)"
+    assert test_3.count_validated_passports() == 3, "3 valid passports inputted (p2)"
     print("All tests passed")
 
 
 def main():
     test()
     airport_scanner = PassportScanner("input.txt")
-    print("Part 1:", airport_scanner.count_passports())
-    print("Part 2:", airport_scanner.count_validated_passports())
+    part_1 = airport_scanner.count_passports()
+    part_2 = airport_scanner.count_validated_passports()
+    print("Part 1:", part_1)
+    print("Part 2:", part_2)
+
+    assert part_1 == 254, "Part 1 should be 254"
+    assert part_2 == 184, "Part 2 should be 184"
 
 
 if __name__ == "__main__":

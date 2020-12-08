@@ -1,9 +1,4 @@
-def part1(program):
-    game_console = Console(program, report_loop=True)
-    game_console.boot()
-
-
-def part2(instructions):
+def fix_loop(instructions):
     for line, instruction in enumerate(instructions):
         optcode = instruction[0:3]
         operand = instruction[4:]
@@ -44,9 +39,10 @@ def main():
         instructions = f.read().splitlines()
 
     print("Boot for the first time")
-    part1(instructions)
+    game_console = Console(program, report_loop=True)
+    game_console.boot()
     print("Try to avoid loop by replacing one 'jmp' instruction with 'nop'")
-    part2(instructions)
+    fix_loop(instructions)
 
 
 if __name__ == "__main__":

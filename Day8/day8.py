@@ -1,6 +1,3 @@
-def part1(program):
-
-
 def fix_loop(instructions):
     for line, instruction in enumerate(instructions):
         optcode = instruction[0:3]

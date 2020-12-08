@@ -1,69 +1,40 @@
-with open("input.txt") as f:
-    data = f.read().splitlines()
+def parse_bags():
+    with open("input.txt") as f:
+        raw_data = f.read().replace(" bags", "").replace(" bag", "").splitlines()
 
-# print(data[1])
-data = [d[:-1].split(" contain ") for d in data]
-data = [[d[0].split(" bags")[0], d[1].split(", ")] for d in data]
-data_new = []
-for d in data:
-    data_add = []
-    for d1 in d[1]:
-        dataa = d1.replace(" bags", "").replace(" bag", "")
-        if dataa[0] == "n":
-            continue
-        data_add.append([int(dataa[0]), dataa[2:]])
-
-    data_new.append([d[0], data_add])
-
-counter = 0
+    data = {}
+    for d in raw_data:
+        outer, inner = d[:-1].split(" contain ")
+        data[outer] = [[int(inner_bag[0]), inner_bag[2:]]
+                       for inner_bag in inner.split(", ") if inner_bag[0] != "n"]
+    return data
 
 
-def find(outerbag, found_bag):
-    # print(outerbag[0], "contains", outerbag[1])
-    for subbag in outerbag[1]:
-        # print("subbag:", subbag)
-        if subbag[1] == found_bag:
-            # print("Found", subbag, "in", outerbag)
+def find_bag(bag, bag_found, bags):
+    '''Given a bag with the content, check if a bag is contained in one the bags (or the content of that bags or ...)'''
+    for subbag in bag:
+        if subbag[1] == bag_found or find_bag(bags[subbag[1]], bag_found, bags):
             return 1
-        else:
-            for bag in data_new:
-                if subbag[1] == bag[0]:
-                    if find(bag, found_bag):
-                        return 1
     return 0
 
 
-counter = 0
-# for bag in data_new:
-#    counter += find(bag, "shiny gold")
-#    #print("Counter:", counter)
-
-# print(counter)
+def find_number(outerbag, bags):
+    '''Number of bags in subbags. Recursive looping through all the subbags till a subbag does not contain any other bag'''
+    return sum([bag[0] + bag[0]*find_number(bag[1], bags)
+                for bag in bags[outerbag]])
 
 
-def find_number(outerbag):
-    print("Find", outerbag)
-    for bag in data_new:
-        if bag[0] == outerbag:
-            print("Found a bag,", bag)
-            print("Subs:", bag[1])
-            res = 0
-            for subbag in bag[1]:
+def main():
+    bags = parse_bags()
 
-                res1 = find_number(subbag[1])
-                print(res1)
-                res += subbag[0] + subbag[0]*res1
-            return res
-    return 0
+    # Part 1
+    counter = sum([find_bag(bags[bag], "shiny gold", bags) for bag in bags])
+    print("Part1:", counter)
+
+    # Part 2
+    counter = find_number("shiny gold", bags)
+    print("Part 2:", counter)
 
 
-counter = find_number("shiny gold")
-# for bag in data_new:
-#    print(bag)
-#    if bag[0] == "shiny gold":
-#        for subbag in bag[1]:
-#            print("Sub:", subbag)
-##            counter += subbag[0]
-#            counter += subbag[0]*find_number(subbag[1])
-
-print(counter)
+if __name__ == "__main__":
+    main()

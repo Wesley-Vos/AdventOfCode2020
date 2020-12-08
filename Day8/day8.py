@@ -1,3 +1,6 @@
+def part1(program):
+
+
 def fix_loop(instructions):
     for line, instruction in enumerate(instructions):
         optcode = instruction[0:3]
@@ -39,7 +42,7 @@ def main():
         instructions = f.read().splitlines()
 
     print("Boot for the first time")
-    game_console = Console(program, report_loop=True)
+    game_console = Console(instructions, report_loop=True)
     game_console.boot()
     print("Try to avoid loop by replacing one 'jmp' instruction with 'nop'")
     fix_loop(instructions)

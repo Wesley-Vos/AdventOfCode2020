@@ -1,16 +1,18 @@
 import itertools
+import timeit
 
 
-def find_invalid_number(preamble, n):
+def find_invalid_number(preamble: list, n: int) -> int:
     for i in range(n, len(preamble)):
         number = preamble[i]
         combinations = list(itertools.combinations(preamble[(i-n):i], 2))
         sums = [sum(combination) for combination in combinations]
         if number not in sums:
             return number
+    return -1
 
 
-def find_contiguous_set(preamble, invalid_number):
+def find_contiguous_set(preamble: list, invalid_number: int) -> int:
     for start in range(0, len(preamble) - 1):
         end = start
         set_sum = 0
@@ -20,7 +22,7 @@ def find_contiguous_set(preamble, invalid_number):
 
         if set_sum == invalid_number and (end - start) >= 2:
             return min(preamble[start:end]) + max(preamble[start:end])
-    return "No contiguous set found"
+    return -1
 
 
 def main():

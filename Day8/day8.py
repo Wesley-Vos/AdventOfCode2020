@@ -35,8 +35,7 @@ class Console:
 
 
 def main():
-    with open("input.txt") as f:
-        instructions = f.read().splitlines()
+    instructions = file.input("inputs/day8.txt")
 
     print("Boot for the first time")
     game_console = Console(instructions, report_loop=True)

@@ -1,5 +1,5 @@
 def parse_bags():
-    with open("input.txt") as f:
+    with open("inputs/day7.txt") as f:
         raw_data = f.read().replace(" bags", "").replace(" bag", "").splitlines()
 
     data = {}

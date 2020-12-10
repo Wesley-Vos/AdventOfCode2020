@@ -1,6 +1,6 @@
 import itertools
 import timeit
-
+from Utils import file
 
 def find_invalid_number(preamble: list, n: int) -> int:
     for i in range(n, len(preamble)):
@@ -26,8 +26,7 @@ def find_contiguous_set(preamble: list, invalid_number: int) -> int:
 
 
 def main():
-    with open("input.txt") as f:
-        preamble = list(map(int, f.read().splitlines()))
+    preamble = file.input_int("inputs/day9.txt")
 
     invalid_number = find_invalid_number(preamble, 25)
     print("Part 1:", invalid_number)

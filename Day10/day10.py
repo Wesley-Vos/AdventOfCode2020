@@ -21,7 +21,7 @@ def find_distinct_ways(i, adapters):
 
 
 def main():
-    with open("inputs/day10.txt") as f:
+    with open("input.txt") as f:
         adapters = list(map(int, f.read().splitlines()))
     adapters += [0, max(adapters) + 3]
     adapters.sort()

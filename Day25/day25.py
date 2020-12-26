@@ -1,10 +1,9 @@
 def transform_subject(val, sn):
-    val *= sn
-    return val%20201227
+    return (val*sn)%20201227
     
-def transform(sn, loop):
+def transform_n_times(sn, n):
     val = 1
-    for i in range(loop):
+    for i in range(n):
         val = transform_subject(val, sn)
     return val
     
@@ -15,20 +14,18 @@ def find_loop_size(sn, tn):
         val = transform_subject(val, sn)
         i += 1
     return i
+    
+def find_ek(card_pk, door_pk):
+    sn = 7
+    card_loop = find_loop_size(sn, card_pk)
+
+    return transform_n_times(door_pk, card_loop)
 
 def main():
-    sn = 7
+    card_pk = 12320657
+    door_pk = 9659666
     
-    card_pk = 5764801
-    door_pk = 17807724
-    card_loop = find_loop_size(sn, card_pk)
-    door_loop = find_loop_size(sn, door_pk)
-
-    ek = transform(door_pk, card_loop)
-    ek2 = transform(card_pk, door_loop)
-    print(ek if ek == ek2 else "Problem")
-    
-
+    print(find_ek(card_pk, door_pk))
 
 if __name__ == "__main__":
     main()

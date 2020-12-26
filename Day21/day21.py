@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 def main():
     with open("input.txt") as f:
         raw_data = f.read()
@@ -23,9 +25,21 @@ def main():
     
     ingred_aller = [ingre for i, ingredientss in allergens.items() for ingre in ingredientss]
     diff = [ing for ing in all_ingredients if ing not in ingred_aller]
-    print(len(diff))
-    print(allergens)
+    # print(len(diff))
+    # print(allergens)
+    a = sorted(OrderedDict(allergens))
+    string = ""
+    for b in a:
+        print(b)
+        for c in allergens[b]:
+            print(c)
+            
+            string += c + ","
+        print("")
+            
+    print(string[:-1])
     
+    print("kbmlt,mrccxm,lpzgzmk,ppj,stj,jvgnc,gxnr,plrlg")
     
     
 

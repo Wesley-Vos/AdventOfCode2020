@@ -15,8 +15,9 @@ def rotate(image):
 
 def find_adjacent(ID_f, images):
     image_f = images[ID_f]
+    out = {"l": None, "r": None, "t": None, "b": None}
     for ID, image in images.items():
-        print("Test", ID)
+        # print("Test", ID)
         if ID == ID_f:
             continue
         left = True
@@ -37,19 +38,28 @@ def find_adjacent(ID_f, images):
 
         if left or right or top or bottom:
             print("Found adjacent", ID, left, right, top, bottom)
+        #out[ID] = (left, right, top, bottom)
+        if left:
+            out["l"] = ID
+        elif right:
+            out["r"] = ID
+        elif top:
+            out["t"] = ID
+        elif bottom:
+            out["b"] = ID
             
-            for i in range(len(image_f)):
-                if right:
-                    print(images[ID][i][0], images[ID_f][i][-1])
-                if left:
-                    print(images[ID][i][-1], images[ID_f][i][0])
-            if top:
-                print(images[ID][-1])
-                print(images[ID_f][0])
-            if bottom:
-                print(images[ID][0])
-                print(images[ID_f][-1])
-            
+            #for i in range(len(image_f)):
+                #if right:
+                    #print(images[ID][i][0], images[ID_f][i][-1])
+                #if left:
+                    #print(images[ID][i][-1], images[ID_f][i][0])
+            #if top:
+                #print(images[ID][-1])
+                #print(images[ID_f][0])
+            #if bottom:
+                #print(images[ID][0])
+                #print(images[ID_f][-1]
+    return out
             
 
 
@@ -60,7 +70,9 @@ def main():
     images = {int(image[0][5:9]): [[c for c in row]
                                    for row in image[1:]] for image in raw_images}
 
-    find_adjacent(2311, images)
+    for image in images:
+        print("Image:", image)
+        print(find_adjacent(image, images))
 
 
 if __name__ == "__main__":

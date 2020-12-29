@@ -1,78 +1,127 @@
+import math
+import copy
+import itertools
 
-def flip(image, dir):
-    if dir == "h":
-        new_image = image[::-1]
-    elif dir == "v":
-        new_image = [img[::-1] for img in image]
+class Tile:
+    def __init__(self, id, tile):
+        self.id = id
+        self.tile = tile
+        self.edges = self._calc_edges()
         
-    return  new_image
-    
-def rotate(image):
-    return rotate
-    
-    
-    
-
-def find_adjacent(ID_f, images):
-    image_f = images[ID_f]
-    out = {"l": None, "r": None, "t": None, "b": None}
-    for ID, image in images.items():
-        # print("Test", ID)
-        if ID == ID_f:
-            continue
-        left = True
-        right = True
+    def __str__(self):
+        return str(self.id)
         
+        
+    def __repr__(self):
+        return self.__str__()
+        
+    def display(self):
+        for row in self.tile:
+            print("".join(row))
+    
+    def _edge_to_int(self, edge):
+        return int(edge.replace(".", "0").replace("#", "1"), 2)
+        
+    def _calc_edges(self):
+        up = self._edge_to_int("".join(self.tile[0]))
+        down = self._edge_to_int("".join(self.tile[-1]))
+        left = self._edge_to_int("".join([row[0] for row in self.tile]))
+        right = self._edge_to_int("".join([row[-1] for row in self.tile]))
+        return {"l": left, "r": right, "u": up, "d": down}
+        
+    def flip_h(self):
+        tile = self.tile[::-1]
+        return Tile(self.id, tile)
+        
+    def flip_v(self):
+        tile = [row[::-1] for row in self.tile]
+        return Tile(self.id, tile)
+        
+    def rotate(self, amt):
+        n = len(self.tile)
+        tile = self.tile
+        for _ in range(amt):
+            tile = [[tile[n - 1 - i][j] for i in range(n)] for j in range(n)]
+        return Tile(self.id, tile)
+        
+        
+class Image:
+    def __init__(self, n, size):
+        self.n = n
+        self.size = size
+        self.grid = [[0 for _ in range(n)] for _ in range(n)]
+        
+    def add(self, tile):
+        for i in range(self.n):
+            for j in range(self.n):
+                if self.grid[i][j] == 0:
+                    self.grid[i][j] = tile
+                    return
 
-        for i, row in enumerate(image):
-            # left
-            if row[-1] != image_f[i][0]:
-                left = False
-            # right
-            if row[0] != image_f[i][-1]:
-                right = False
-
-        #print(image_f[0], image[-1])
-        top = image_f[0] == image[-1]
-        bottom = image_f[-1] == image[0]
-
-        if left or right or top or bottom:
-            print("Found adjacent", ID, left, right, top, bottom)
-        #out[ID] = (left, right, top, bottom)
-        if left:
-            out["l"] = ID
-        elif right:
-            out["r"] = ID
-        elif top:
-            out["t"] = ID
-        elif bottom:
-            out["b"] = ID
+    def display(self):
+        for row in self.grid:
+            print(" ".join(map(str, row)))
+        
+        
+def solve(image, pos, all_tiles):
+    n = image.n
+    i, j = math.floor(pos/n), pos % n
+    # print("Solve for pos", pos, i, j)
+    
+    if pos == n*n:
+        print("Solution!")
+        image.display()
+        product = 1
+        for i in (0, n-1):
+            for j in (0, n-1):
+                product *= image.grid[i][j].id
+        print(product)
+        return 1
+    
+    for t, tiles in enumerate(all_tiles):
+        if t == 1 and pos == 0:
+            break
+        for tt, tile in enumerate(tiles):
+            # print("Use", tile, "option", tt)
+            checkI, checkJ = True, True
             
-            #for i in range(len(image_f)):
-                #if right:
-                    #print(images[ID][i][0], images[ID_f][i][-1])
-                #if left:
-                    #print(images[ID][i][-1], images[ID_f][i][0])
-            #if top:
-                #print(images[ID][-1])
-                #print(images[ID_f][0])
-            #if bottom:
-                #print(images[ID][0])
-                #print(images[ID_f][-1]
-    return out
-            
-
-
+            #Upper
+            if i != 0:
+                checkI = (tile.edges["u"] == image.grid[i - 1][j].edges["d"])
+                
+            #Left
+            if j != 0:
+                checkJ = (tile.edges["l"] == image.grid[i][j - 1].edges["r"])
+            if checkI and checkJ:
+                image.grid[i][j] = tile
+                new = all_tiles[0:t] + all_tiles[t+1::]
+                res = solve(image, pos + 1, new)
+                if res:
+                    return 1
+    #print("No options left")
+    return 0
+    
+    
 def main():
-    with open('test_input.txt') as f:
+    with open('input.txt') as f:
         raw_data = f.read()
     raw_images = [image.splitlines() for image in raw_data.split("\n\n")]
-    images = {int(image[0][5:9]): [[c for c in row]
-                                   for row in image[1:]] for image in raw_images}
-
-    for image in images:
-        print("Image:", image)
-        print(find_adjacent(image, images))
+    
+    image = Image(int(math.sqrt(len(raw_images))), len(raw_images))
+    all_tiles = []
+    
+    for img in raw_images:
+        tile = Tile(int(img[0][5:9]), [[c for c in row] for row in img[1::]])
+        tiles1 = [tile]
+        for i in range(1, 4):
+            tiles1.append(tile.rotate(i))
+        tiles = tiles1.copy()
+        for tile in tiles1:
+            tiles.append(tile.flip_v())
+            tiles.append(tile.flip_h())
+        all_tiles.append(tiles)
+    
+    solve(image, 0, all_tiles)
 
 
 if __name__ == "__main__":

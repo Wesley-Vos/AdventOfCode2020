@@ -66,7 +66,7 @@ class Image:
 def solve(image, pos, all_tiles):
     n = image.n
     i, j = math.floor(pos/n), pos % n
-    # print("Solve for pos", pos, i, j)
+    print("Solve for pos", pos, i, j)
     
     if pos == n*n:
         print("Solution!")

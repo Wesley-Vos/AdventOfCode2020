@@ -21,6 +21,9 @@ class Tile:
     
     def _edge_to_int(self, edge):
         return int(edge.replace(".", "0").replace("#", "1"), 2)
+
+    def edges_list(self):
+        return [e for d, e in self.edges.items()]
         
     def _calc_edges(self):
         up = self._edge_to_int("".join(self.tile[0]))
@@ -62,6 +65,34 @@ class Image:
         for row in self.grid:
             print(" ".join(map(str, row)))
         
+def solve2(all_tiles):
+    prod = 1
+    for tiles in all_tiles:
+        for t in tiles:
+            
+            cnt = 0
+            brk = False
+            for d, e in t.edges.items():
+                for tiles1 in all_tiles:
+                    if tiles1 == tiles:
+                        continue
+                    for t1 in tiles1:
+                        if e in t1.edges_list():
+                            
+                            brk = True
+                            break
+                    if brk:
+                        break
+                if brk:
+                    break
+                cnt += 1
+     
+                
+                
+            if cnt == 2:
+                prod *= t.id
+    print(prod)
+            
         
 def solve(image, pos, all_tiles):
     n = image.n
@@ -82,7 +113,8 @@ def solve(image, pos, all_tiles):
         if t == 1 and pos == 0:
             break
         for tt, tile in enumerate(tiles):
-            # print("Use", tile, "option", tt)
+            if pos >= 60:
+                print("Use", tile, "option", tt)
             checkI, checkJ = True, True
             
             #Upper
@@ -103,7 +135,7 @@ def solve(image, pos, all_tiles):
     
     
 def main():
-    with open('input.txt') as f:
+    with open('test_input.txt') as f:
         raw_data = f.read()
     raw_images = [image.splitlines() for image in raw_data.split("\n\n")]
     
@@ -121,8 +153,8 @@ def main():
             tiles.append(tile.flip_h())
         all_tiles.append(tiles)
     
-    solve(image, 0, all_tiles)
-
+    #solve(image, 0, all_tiles)
+    solve2(all_tiles)
 
 if __name__ == "__main__":
 
